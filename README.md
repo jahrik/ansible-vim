@@ -19,7 +19,7 @@ I'm going to fire up a couple of virtual machines to test this using Vagrant and
 
 **[Vagrantfile]()**
 
-    ```
+```
     # -*- mode: ruby -*-
     # vi: set ft=ruby :
     VAGRANTFILE_API_VERSION = '2'.freeze
@@ -62,7 +62,7 @@ I'm going to fire up a couple of virtual machines to test this using Vagrant and
         ]
       end
     end
-    ```
+```
 
 ## Install vim 
 
