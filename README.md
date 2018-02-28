@@ -18,13 +18,13 @@ Ansible is my favorite tool for managing a local system.  I like chef for orches
 I'm going to fire up a couple of virtual machines to test this using Vagrant and Virtualbox.  If you're already on a linux machine, chances are this playbook should work locally. I'm running arch locally and want to also test this playbook in ubuntu and fedora virtual machines.
 
 | Info              | Fedora | Ubuntu |
-| ----------------- | -----:| -------:|
-| Virtual CPU cores |     2 |       2 |
-| CPU usage cap     |   50% |     50% |
-| RAM               |    2G |      2G |
-| GUI               | false |   false |
-| X11 forwarding    |  true |    true |
-| Shared folder     | false |   false |
+|:----------------- |:------ |:------- |
+| Virtual CPU cores |      2 |       2 |
+| CPU usage cap     |    50% |     50% |
+| RAM               |     2G |      2G |
+| GUI               |  false |   false |
+| X11 forwarding    |   true |    true |
+| Shared folder     |  false |   false |
 | IP                | 192.168.33.11 | 192.168.33.12 |
 | Provision with    | 'dnf -y install python' | 'apt-get update && apt-get -y install python' |
 
