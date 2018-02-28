@@ -1,6 +1,6 @@
 # Managing vim with ansible
 
-Vim is my favorite text editor and a tool that I use every day at work and at home.  I'm writing this text with vim.  If you are in the IT field, you can relate that a text editor is one of your most powerful tools.  Being comfortable and proficient in "{{ text_editor_of_your_choice }}" seams like a basic skill, but is a very valuable skill to have.  Getting used to the default install with base configs is not a bad idea, either.  As a sysadmin, you will most likely only be using the default settings accross all the systems you manage, but on your personal system you should go nuts and customize the hell out of it.
+Vim is my favorite text editor and a tool that I use every day at work and at home.  I'm writing this text with vim.  If you are in the IT field, you can relate that a text editor is one of your most powerful tools.  Being comfortable and proficient in "{{ text_editor_of_your_choice }}" seams like a basic skill, but is a very valuable skill to have.  Getting used to the default install with base configs is not a bad idea, either.  As a sysadmin, you will most likely only be using the default settings across all the systems you manage, but on your personal system you should go nuts and customize the hell out of it.
 
 Ansible is my favorite tool for managing a local system.  I like chef for orchestrating larger infrastructure, but Ansible just makes more sense when it comes to configuring one or two local systems.  There's just way less setup involved.  If you are setting up Ansible for the first time, you'll want to start with their [install docs](http://docs.ansible.com/ansible/latest/intro_installation.html).  Once you've got it installed and are ready to go, you can follow along locally or on a VM.  I'll do so with a couple of vagrant boxes.
 
@@ -17,20 +17,24 @@ Ansible is my favorite tool for managing a local system.  I like chef for orches
 
 I'm going to fire up a couple of virtual machines to test this using Vagrant and Virtualbox.  If you're already on a linux machine, chances are this playbook should work locally. I'm running arch locally and want to also test this playbook in ubuntu and fedora virtual machines.
 
-| Info              |      Fedora             |             Ubuntu |
-|:----------------- | -----------------------:| ------------------:|
-| Hostname          |                fedora27 |           ubuntu16 |
-| IP                |           192.168.33.11 |      192.168.33.12 |
-| Box               |         bento/fedora-27 | bento/ubuntu-16.04 |
-| Virtual CPU cores |                       2 |                  2 |
-| CPU usage cap     |                     50% |                50% |
-| RAM               |                      2G |                 2G |
-| GUI               |                   false |              false |
-| X11 forwarding    |                    true |               true |
-| Shared folder     |                   false |              false |
+| Info              |      Fedora             |                                        Ubuntu |
+|:----------------- | -----------------------:| ---------------------------------------------:|
+| Hostname          |                fedora27 |                                      ubuntu16 |
+| IP                |           192.168.33.11 |                                 192.168.33.12 |
+| Box               |         bento/fedora-27 |                            bento/ubuntu-16.04 |
+| Virtual CPU cores |                       2 |                                             2 |
+| CPU usage cap     |                     50% |                                           50% |
+| RAM               |                      2G |                                            2G |
+| GUI               |                   false |                                         false |
+| X11 forwarding    |                    true |                                          true |
+| Shared folder     |                   false |                                         false |
 | Provision with    | 'dnf -y install python' | 'apt-get update && apt-get -y install python' |
 
-**[Vagrantfile]()**
+You can generate a new Vagrant file with the following command or you can just copy and paste the one below.
+
+    vagrant ini bento/fedora-27
+
+**[Vagrantfile](https://raw.githubusercontent.com/jahrik/ansible-vim/master/Vagrantfile)**
 
 ```
 # -*- mode: ruby -*-
@@ -76,6 +80,25 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   end
 end
 ```
+
+**Add your network interface to the list, if it's not already there**
+**%w[en0 eth0 enp0s31f6 wlp4s0]**
+
+Bring these boxes up with
+
+    vagrant up
+    ...
+    ...
+
+Once they're finished building, check the status
+
+    vagrant status
+    Current machine states:
+
+    fedora                    running (virtualbox)
+    ubuntu                    running (virtualbox)
+
+Reach them at the static IP assigned to the bridged network.
 
 ## Install vim 
 
