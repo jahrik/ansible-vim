@@ -25,9 +25,6 @@ I'm going to fire up a couple of virtual machines to test this using Vagrant and
 | GUI               | false |   false |
 | X11 forwarding    |  true |    true |
 | Shared folder     | false |   false |
-
-| Info              | Fedora        | Ubuntu        |
-| ----------------- | ------------- | ------------- |
 | IP                | 192.168.33.11 | 192.168.33.12 |
 | Provision with    | 'dnf -y install python' | 'apt-get update && apt-get -y install python' |
 
