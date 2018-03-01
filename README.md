@@ -1,167 +1,38 @@
-# Managing vim with ansible
+Role Name
+=========
 
-Vim is my favorite text editor and a tool that I use every day at work and at home.  I'm writing this text with vim.  If you are in the IT field, you can relate that a text editor is one of your most powerful tools.  Being comfortable and proficient in "{{ text_editor_of_your_choice }}" seams like a basic skill, but is a very valuable skill to have.  Getting used to the default install with base configs is not a bad idea, either.  As a sysadmin, you will most likely only be using the default settings across all the systems you manage, but on your personal system you should go nuts and customize the hell out of it.
+A brief description of the role goes here.
 
-Ansible is my favorite tool for managing a local system.  I like chef for orchestrating larger infrastructure, but Ansible just makes more sense when it comes to configuring one or two local systems.  There's just way less setup involved.  If you are setting up Ansible for the first time, you'll want to start with their [install docs](http://docs.ansible.com/ansible/latest/intro_installation.html).  Once you've got it installed and are ready to go, you can follow along locally or on a VM.  I'll do so with a couple of vagrant boxes.
+Requirements
+------------
 
+Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
 
-## Requirements
-* [Ansible](http://docs.ansible.com/ansible/latest/intro_installation.html)
-* [Vagrant](https://www.vagrantup.com/docs/installation/) - optional
-  * I also have the following vagrant plugins installed:
-    * vagrant-vbguest (0.15.1) # Automatically install guest additions
-* [Virtualbox](https://www.virtualbox.org/wiki/Downloads) - optional
-* Tested on ubuntu, arch, and redhat linux
+Role Variables
+--------------
 
-## Vagrant
+A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
 
-I'm going to fire up a couple of virtual machines to test this using Vagrant and Virtualbox.  If you're already on a linux machine, chances are this playbook should work locally. I'm running arch locally and want to also test this playbook in ubuntu and fedora virtual machines.
+Dependencies
+------------
 
-| Info              |      Fedora             |                                        Ubuntu |
-|:----------------- | -----------------------:| ---------------------------------------------:|
-| Hostname          |                fedora27 |                                      ubuntu16 |
-| IP                |           192.168.33.11 |                                 192.168.33.12 |
-| Box               |         bento/fedora-27 |                            bento/ubuntu-16.04 |
-| Virtual CPU cores |                       2 |                                             2 |
-| CPU usage cap     |                     50% |                                           50% |
-| RAM               |                      2G |                                            2G |
-| GUI               |                   false |                                         false |
-| X11 forwarding    |                    true |                                          true |
-| Shared folder     |                   false |                                         false |
-| Provision with    | 'dnf -y install python' | 'apt-get update && apt-get -y install python' |
+A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
 
-You can generate a new Vagrant file with the following command or you can just copy and paste the one below.
+Example Playbook
+----------------
 
-    vagrant ini bento/fedora-27
+Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
 
-**[Vagrantfile](https://raw.githubusercontent.com/jahrik/ansible-vim/master/Vagrantfile)**
+    - hosts: servers
+      roles:
+         - { role: username.rolename, x: 42 }
 
-```
-# -*- mode: ruby -*-
-# vi: set ft=ruby :
-VAGRANTFILE_API_VERSION = '2'.freeze
-Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
-  #
-  # Virtualbox configs
-  config.vm.provider :virtualbox do |vb|
-    vb.cpus = 2
-    vb.gui = false
-    vb.customize ['modifyvm', :id, '--memory', '2048']
-    vb.customize ['modifyvm', :id, '--cpus', '2']
-    vb.customize ['modifyvm', :id, '--cpuexecutioncap', '50']
-  end
-  config.ssh.forward_x11 = true
-  config.vm.synced_folder '', '', disabled: true
+License
+-------
 
-  # Fedora box
-  config.vm.define 'fedora' do |fedora|
-    fedora.vm.hostname = 'fedora27'
-    fedora.vm.box = 'bento/fedora-27'
-    fedora.vm.provision 'shell', inline: 'dnf -y install python'
-    fedora.vm.network 'public_network', ip: '192.168.33.11', bridge: %w[
-      en0
-      eth0
-      enp0s31f6
-      wlp4s0
-    ]
-  end
+BSD
 
-  # Ubuntu box
-  config.vm.define 'ubuntu' do |ubuntu|
-    ubuntu.vm.hostname = 'ubuntu16'
-    ubuntu.vm.box = 'bento/ubuntu-16.04'
-    ubuntu.vm.provision 'shell', inline: 'apt-get update && apt-get -y install python'
-    ubuntu.vm.network 'public_network', ip: '192.168.33.12', bridge: %w[
-      en0
-      eth0
-      enp0s31f6
-      wlp4s0
-    ]
-  end
-end
-```
+Author Information
+------------------
 
-**Add your network interface to the list, if it's not already there**
-**%w[en0 eth0 enp0s31f6 wlp4s0]**
-
-Bring these boxes up with
-
-    vagrant up
-    ...
-    ...
-
-Once they're finished building, check the status
-
-    vagrant status
-    Current machine states:
-
-    fedora                    running (virtualbox)
-    ubuntu                    running (virtualbox)
-
-Reach them at the static IP assigned to the bridged network.
-
-## Install vim 
-
-**playbook.yml**
-
-    ---
-    - hosts: all
-      tasks:
-        - name: Install vim
-          package:
-            name: vim
-            state: present
-          tags:
-            - vim
-
-
-```
-# ---
-# - hosts: all
-#   tasks:
-#     - name: Install vim
-#       package:
-#         name: vim
-#         state: present
-#       tags: [ "vim" ]
-# 
-#     - name: create ~/.vim diretory
-#       file:
-#         path: "/home/{{ ansible_user }}/.vim/"
-#         state: directory
-#         owner: "{{ ansible_user }}"
-#         group: "{{ ansible_user }}"
-#         mode: 0755
-#       tags: [ "vim" ]
-# 
-#     - name: Clone vundle from github
-#       git:
-#         repo: https://github.com/VundleVim/Vundle.vim.git
-#         dest: "/home/{{ ansible_user }}/.vim/bundle/Vundle.vim"
-#         version: master
-#       tags: [ "vim" ]
-# 
-#     - name: Generate ~/.vimrc
-#       template:
-#         src: vimrc.j2
-#         dest: "/home/{{ ansible_user }}/.vimrc"
-#         owner: "{{ ansible_user }}"
-#         group: "{{ ansible_user }}"
-#         mode: "0644"
-#       notify: install plugins
-#       tags: [ "vim" ]
-# 
-#     - name: Touch spell-check file
-#       file:
-#         path: "/home/{{ ansible_user }}/.vim/en.utf-8.add"
-#         owner: "{{ ansible_user }}"
-#         group: "{{ ansible_user }}"
-#         state: touch
-#         mode: 0644
-#       tags: [ "vim" ]
-# 
-#     - name: vim info
-#       debug:
-#         msg: "See ':h vundle' for more details."
-#       tags: [ "vim" ]
-```
+An optional section for the role authors to include contact information, or a website (HTML is not allowed).
