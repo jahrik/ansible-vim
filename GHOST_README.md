@@ -1,106 +1,36 @@
-# Managing vim with ansible
+# Creating and testing an ansible role with molecule.
 
-Vim is my favorite text editor and a tool that I use every day at work and at home.  I'm writing this text with vim.  If you are in the IT field, you can relate that a text editor is one of your most powerful tools.  Being comfortable and proficient in "{{ text_editor_of_your_choice }}" seams like a basic skill, but is a very valuable skill to have.  Getting used to the default install with base configs is not a bad idea, either.  As a sysadmin, you will most likely only be using the default settings across all the systems you manage, but on your personal system you should go nuts and customize the hell out of it.
+Vim is my favorite text editor and a tool that I use every day at work and at home.  If you are in the IT field, you can relate that a text editor is one of your most powerful tools.  Being comfortable and proficient in "{{ text_editor_of_your_choice }}" seams like a basic skill, but is a very valuable skill to have.  Getting used to the default install with base configs is a good idea.  As a sysadmin, you will most likely only be using the default settings across all the systems you manage, but on your personal system and workstation you should go nuts and customize the hell out of it to give yourself as much ease of use as possible. I like a lot of customization to vim when I set it up on a new workstation and install vundle to handle plugins.  I end up with a customized .vimrc file and a bunch of other things and if I had to do this setup manually, it would take a few hours at least.  Half of that time Googling how I did something before.  With tools like ansible, you can easily recreate the customization you prefer across all of your systems, be that at work or your homelab and save yourself hours of frustration and repetition.
 
-Ansible is my favorite tool for managing a local system.  I like chef for orchestrating larger infrastructure, but Ansible just makes more sense when it comes to configuring one or two local systems.  There's just way less setup involved.  If you are setting up Ansible for the first time, you'll want to start with their [install docs](http://docs.ansible.com/ansible/latest/intro_installation.html).  Once you've got it installed and are ready to go, you can follow along locally or on a VM.  I'll do so with a couple of vagrant boxes.
+Ansible is a very reliable tool for managing your local workstation.  A good place to start automating, is at the base of your every day setup.  Text editor, user, groups, base packages, and every day tools inevitably installed anytime you get a new system or accidentally lose or kill your old one.  If you are setting up Ansible for the first time, you'll want to start with their [install docs](http://docs.ansible.com/ansible/latest/intro_installation.html).  Once you've got it installed and are ready to go, you can follow along locally or on a VM.  My initial plan was to do this with a couple of vagrant boxes in my traditional way of testing new things by creating a Vagrantfile and going from there, but after getting started in writing this and also considering test kitchen I've decided to check out [molecule](https://molecule.readthedocs.io/en/latest/index.html).
 
+This write-up is intended to:
+* walk through the creation of a new ansible role
+* write and test it with molecule
+* upload it to ansible galaxy for use in a later playbook
 
 ## Requirements
+
+* Python2.7
 * [Ansible](http://docs.ansible.com/ansible/latest/intro_installation.html)
-* [Vagrant](https://www.vagrantup.com/docs/installation/) - optional
-  * I also have the following vagrant plugins installed:
-    * vagrant-vbguest (0.15.1) # Automatically install guest additions
-* [Virtualbox](https://www.virtualbox.org/wiki/Downloads) - optional
-* Tested on ubuntu, arch, and redhat linux
+* [Molecule](https://molecule.readthedocs.io/en/latest/installation.html)
+* [Docker](https://docs.docker.com/install/)
+* Tested on arch, ubuntu-16.04, and fedora-27
 
-## Vagrant
+## Molecule
 
-I'm going to fire up a couple of virtual machines to test this using Vagrant and Virtualbox.  If you're already on a linux machine, chances are this playbook should work locally. I'm running arch locally and want to also test this playbook in ubuntu and fedora virtual machines.
+If you decide to set up a virtualenv and install molecule that way, you can do the following.  If you need an intro on python virtualenv you can find it [here](https://homelab.business/python-virualenv-the-why-and-how/).
 
-| Info              |      Fedora             |                                        Ubuntu |
-|:----------------- | -----------------------:| ---------------------------------------------:|
-| Hostname          |                fedora27 |                                      ubuntu16 |
-| IP                |           192.168.33.11 |                                 192.168.33.12 |
-| Box               |         bento/fedora-27 |                            bento/ubuntu-16.04 |
-| Virtual CPU cores |                       2 |                                             2 |
-| CPU usage cap     |                     50% |                                           50% |
-| RAM               |                      2G |                                            2G |
-| GUI               |                   false |                                         false |
-| X11 forwarding    |                    true |                                          true |
-| Shared folder     |                   false |                                         false |
-| Provision with    | 'dnf -y install python' | 'apt-get update && apt-get -y install python' |
+Create a virtual environment for molecule and install it.
 
-You can generate a new Vagrant file with the following command or you can just copy and paste the one below.
+    mkvirtualenv -p /usr/bin/python2.7 ansible
+    pip install docker-py molecule
 
-    vagrant ini bento/fedora-27
+## Role
 
-**[Vagrantfile](https://raw.githubusercontent.com/jahrik/ansible-vim/master/Vagrantfile)**
+A role will allow for easy reuse of tasks.  I want this role to work across multiple operating systems and be very customizable with the use of variables.
 
-```
-# -*- mode: ruby -*-
-# vi: set ft=ruby :
-VAGRANTFILE_API_VERSION = '2'.freeze
-Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
-  #
-  # Virtualbox configs
-  config.vm.provider :virtualbox do |vb|
-    vb.cpus = 2
-    vb.gui = false
-    vb.customize ['modifyvm', :id, '--memory', '2048']
-    vb.customize ['modifyvm', :id, '--cpus', '2']
-    vb.customize ['modifyvm', :id, '--cpuexecutioncap', '50']
-  end
-  config.ssh.forward_x11 = true
-  config.vm.synced_folder '', '', disabled: true
-
-  # Fedora box
-  config.vm.define 'fedora' do |fedora|
-    fedora.vm.hostname = 'fedora27'
-    fedora.vm.box = 'bento/fedora-27'
-    fedora.vm.provision 'shell', inline: 'dnf -y install python'
-    fedora.vm.network 'public_network', ip: '192.168.33.11', bridge: %w[
-      en0
-      eth0
-      enp0s31f6
-      wlp4s0
-    ]
-  end
-
-  # Ubuntu box
-  config.vm.define 'ubuntu' do |ubuntu|
-    ubuntu.vm.hostname = 'ubuntu16'
-    ubuntu.vm.box = 'bento/ubuntu-16.04'
-    ubuntu.vm.provision 'shell', inline: 'apt-get update && apt-get -y install python'
-    ubuntu.vm.network 'public_network', ip: '192.168.33.12', bridge: %w[
-      en0
-      eth0
-      enp0s31f6
-      wlp4s0
-    ]
-  end
-end
-```
-
-**Add your network interface to the list, if it's not already there**
-**%w[en0 eth0 enp0s31f6 wlp4s0]**
-
-Bring these boxes up with
-
-    vagrant up
-    ...
-    ...
-
-Once they're finished building, check the status
-
-    vagrant status
-    Current machine states:
-
-    fedora                    running (virtualbox)
-    ubuntu                    running (virtualbox)
-
-Reach them at the static IP assigned to the bridged network.
-
-## Install vim 
+At the most basic level, if all you needed was a playbook to install vim on arch, ubuntu, and fedora, it would look like this.  Very simple and uses the package module, which will act as a wrapper for many other ansible modules including: apt, yum, dnf, and pacman.
 
 **playbook.yml**
 
@@ -111,57 +41,112 @@ Reach them at the static IP assigned to the bridged network.
           package:
             name: vim
             state: present
-          tags:
-            - vim
 
+### Molecule
 
-```
-# ---
-# - hosts: all
-#   tasks:
-#     - name: Install vim
-#       package:
-#         name: vim
-#         state: present
-#       tags: [ "vim" ]
-# 
-#     - name: create ~/.vim diretory
-#       file:
-#         path: "/home/{{ ansible_user }}/.vim/"
-#         state: directory
-#         owner: "{{ ansible_user }}"
-#         group: "{{ ansible_user }}"
-#         mode: 0755
-#       tags: [ "vim" ]
-# 
-#     - name: Clone vundle from github
-#       git:
-#         repo: https://github.com/VundleVim/Vundle.vim.git
-#         dest: "/home/{{ ansible_user }}/.vim/bundle/Vundle.vim"
-#         version: master
-#       tags: [ "vim" ]
-# 
-#     - name: Generate ~/.vimrc
-#       template:
-#         src: vimrc.j2
-#         dest: "/home/{{ ansible_user }}/.vimrc"
-#         owner: "{{ ansible_user }}"
-#         group: "{{ ansible_user }}"
-#         mode: "0644"
-#       notify: install plugins
-#       tags: [ "vim" ]
-# 
-#     - name: Touch spell-check file
-#       file:
-#         path: "/home/{{ ansible_user }}/.vim/en.utf-8.add"
-#         owner: "{{ ansible_user }}"
-#         group: "{{ ansible_user }}"
-#         state: touch
-#         mode: 0644
-#       tags: [ "vim" ]
-# 
-#     - name: vim info
-#       debug:
-#         msg: "See ':h vundle' for more details."
-#       tags: [ "vim" ]
-```
+To initialize a new role with molecule, you would run the following.
+
+    # -r role
+    # -d driver
+
+    molecule init role -r vim -d docker                                                                            
+
+    --> Initializing new role vim...
+    Initialized role in /home/wgill/vim successfully.
+
+But I had already created this role with `ansible-galaxy init` and had to initialize molecule this way
+
+    # From role root dir
+
+    molecule init scenario -r vim -d docker
+
+    --> Initializing new scenario default...
+    Initialized scenario in /home/wgill/vim/molecule/default successfully.
+
+With molecule initialized you should see a directory structure close to this.
+
+    ├── defaults
+    │   └── main.yml
+    ├── handlers
+    │   └── main.yml
+    ├── meta
+    │   └── main.yml
+    ├── molecule
+    │   └── default
+    │       ├── create.yml
+    │       ├── destroy.yml
+    │       ├── Dockerfile.j2
+    │       ├── INSTALL.rst
+    │       ├── molecule.yml
+    │       ├── playbook.yml
+    │       ├── prepare.yml
+    │       └── tests
+    │           ├── test_default.py
+    │           └── test_default.pyc
+    ├── README.md
+    ├── tasks
+    │   └── main.yml
+    └── vars
+        └── main.yml
+
+Set the containers you will be testing this on in `./molecule/default/molecule.yml`.  For me, this was defaulting to image: centos:7, so I just updated that to be the images I want to test against: ubuntu and fedora.
+
+**./molecule/default/molecule.yml**
+
+    ---
+    dependency:
+      name: galaxy
+    driver:
+      name: docker
+    lint:
+      name: yamllint
+    platforms:
+      - name: fedora-27
+        image: fedora:27
+      - name: ubuntu-16.04
+        image: ubuntu:16.04
+    provisioner:
+      name: ansible
+      lint:
+        name: ansible-lint
+    scenario:
+      name: default
+    verifier:
+      name: testinfra
+      lint:
+        name: flake8
+
+### Vim
+
+Copy your original playbook to `./tasks/main.yml` without the `- hosts: all` or `tasks:` lines.
+
+**./tasks/main.yml**
+
+    ---
+    - name: Install vim
+      package:
+        name: vim
+        state: present
+
+With that, it's ready to go!  Test it by running `molecule test`. There is a lot more to the output below, but these are the steps it takes.
+
+    molecule test
+
+    --> Test matrix
+
+    └── default
+        ├── lint
+        ├── destroy
+        ├── dependency
+        ├── syntax
+        ├── create
+        ├── prepare
+        ├── converge
+        ├── idempotence
+        ├── side_effect
+        ├── verify
+        └── destroy
+
+### Vundle
+
+Vim should be successfully passing tests and installing in both environments by now.
