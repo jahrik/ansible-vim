@@ -1,4 +1,5 @@
 ---
 - name: install plugins
   command: vim +PluginInstall +qall
-  tags: [ "vim" ]
+  tags:
+    - vim

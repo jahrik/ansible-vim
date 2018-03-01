@@ -5,23 +5,26 @@
       package:
         name: vim
         state: present
-      tags: [ "vim" ]
+      tags:
+        - vim
 
-    - name: create ~/.vim diretory
+    - name: create ~/.vim directory
       file:
         path: "/home/{{ ansible_user }}/.vim/"
         state: directory
         owner: "{{ ansible_user }}"
         group: "{{ ansible_user }}"
         mode: 0755
-      tags: [ "vim" ]
+      tags:
+        - vim
 
     - name: Clone vundle from github
       git:
         repo: https://github.com/VundleVim/Vundle.vim.git
         dest: "/home/{{ ansible_user }}/.vim/bundle/Vundle.vim"
         version: master
-      tags: [ "vim" ]
+      tags:
+        - vim
 
     - name: Generate ~/.vimrc
       template:
@@ -31,7 +34,8 @@
         group: "{{ ansible_user }}"
         mode: "0644"
       notify: install plugins
-      tags: [ "vim" ]
+      tags:
+        - vim
 
     - name: Touch spell-check file
       file:
@@ -40,9 +44,11 @@
         group: "{{ ansible_user }}"
         state: touch
         mode: 0644
-      tags: [ "vim" ]
+      tags:
+        - vim
 
     - name: vim info
       debug:
         msg: "See ':h vundle' for more details."
-      tags: [ "vim" ]
+      tags:
+        - vim
