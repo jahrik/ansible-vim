@@ -1,11 +1,15 @@
 # Creating and testing an ansible role with molecule.
 
-Vim is my favorite text editor and a tool that I use every day at work and at home.  If you are in the IT field, you can relate that a text editor is one of your most powerful tools.  Being comfortable and proficient in "{{ text_editor_of_your_choice }}" seams like a basic skill, but is a very valuable skill to have.  Getting used to the default install with base configs is a good idea.  As a sysadmin, you will most likely only be using the default settings across all the systems you manage, but on your personal system and workstation you should go nuts and customize the hell out of it to give yourself as much ease of use as possible. I like a lot of customization to vim when I set it up on a new workstation and install vundle to handle plugins.  I end up with a customized .vimrc file and a bunch of other things and if I had to do this setup manually, it would take a few hours at least.  Half of that time Googling how I did something before.  With tools like ansible, you can easily recreate the customization you prefer across all of your systems, be that at work or your homelab and save yourself hours of frustration and repetition.
+Vim is my favorite text editor and a tool that I use every day at work and at home.  If you are in the IT field, you can relate that a text editor is one of your most powerful tools.  Being comfortable and proficient in "{{ text_editor_of_your_choice }}" seams like a basic skill, but is a very valuable skill to have.  As a sysadmin, you will most likely only be using the default settings across all the systems you manage, but on your personal system and workstation you should go nuts and customize the hell out of it to give yourself as much ease of use as possible. I like a lot of customization to vim when I set it up on a new workstation and install vundle to handle plugins.  I end up with a customized .vimrc file and a bunch of other things.  If I had to do this setup manually, it would take a few hours at least.  Half of that time Googling how I did something before and the other half forgetting what was there to begin with.  With tools like ansible, you can easily recreate the customization you prefer across all of your systems, be that at work or your homelab and save yourself hours of frustration and repetition.
 
 Ansible is a very reliable tool for managing your local workstation.  A good place to start automating, is at the base of your every day setup.  Text editor, user, groups, base packages, and every day tools inevitably installed anytime you get a new system or accidentally lose or kill your old one.  If you are setting up Ansible for the first time, you'll want to start with their [install docs](http://docs.ansible.com/ansible/latest/intro_installation.html).  Once you've got it installed and are ready to go, you can follow along locally or on a VM.  My initial plan was to do this with a couple of vagrant boxes in my traditional way of testing new things by creating a Vagrantfile and going from there, but after getting started in writing this and also considering test kitchen I've decided to check out [molecule](https://molecule.readthedocs.io/en/latest/index.html).
 
 This write-up is intended to:
 * walk through the creation of a new ansible role
+  * tasks
+  * variables
+  * templates
+  * handlers
 * write and test it with molecule
 * upload it to ansible galaxy for use in a later playbook
 
@@ -150,3 +154,17 @@ With that, it's ready to go!  Test it by running `molecule test`. There is a lot
 ### Vundle
 
 Vim should be successfully passing tests and installing in both environments by now.
+
+## Galaxy
+
+[ansible-galaxy intro](https://galaxy.ansible.com/intro)
+
+[generate github token](https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/)
+
+    ansible-galaxy login --github-token REDACTED_TOKEN
+    Successfully logged into Galaxy as jahrik
+
+
+
+
+

@@ -1,7 +1,7 @@
-Role Name
+Vim
 =========
 
-A brief description of the role goes here.
+vim, vundle, plugins, vimrc
 
 Requirements
 ------------
@@ -16,23 +16,25 @@ A description of the settable variables for this role should go here, including 
 Dependencies
 ------------
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+- geerlingguy.git
 
 Example Playbook
 ----------------
 
 Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
 
-    - hosts: servers
+    - hosts: all
       roles:
-         - { role: username.rolename, x: 42 }
+         - { role: jahrik.vim, x: 42 }
 
 License
 -------
 
-BSD
+GPLv2
 
 Author Information
 ------------------
 
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+jahrik@gmail.com
+
+https://homelab.business/
