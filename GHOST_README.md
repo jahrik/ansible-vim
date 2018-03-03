@@ -396,6 +396,19 @@ Append the `./tasks/main.yml` file with a template block to generate the .vimrc 
 
 ## Galaxy
 
+    ansible-galaxy install jahrik.vim                                                       
+    - downloading role 'vim', owned by jahrik
+    - downloading role from https://github.com/jahrik/ansible-vim/archive/master.tar.gz
+    - extracting jahrik.vim to /home/jahrik/.ansible/roles/jahrik.vim
+    - jahrik.vim (master) was installed successfully
+    - adding dependency: geerlingguy.git
+    - downloading role 'git', owned by geerlingguy
+    - downloading role from https://github.com/geerlingguy/ansible-role-git/archive/2.0.0.tar.gz
+    - extracting geerlingguy.git to /home/jahrik/.ansible/roles/geerlingguy.git
+    - geerlingguy.git (2.0.0) was installed successfully
+
+    ln -s /home/jahrik/.ansible/roles molecule/default/roles
+
 [ansible-galaxy intro](https://galaxy.ansible.com/intro)
 
 [generate github token](https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/)

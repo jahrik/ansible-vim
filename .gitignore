@@ -8,3 +8,4 @@
 .eggs/
 *.molecule/
 .vagrant/
+molecule/default/roles
