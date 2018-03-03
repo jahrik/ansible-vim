@@ -4,7 +4,6 @@
     name: "{{ item }}"
     state: present
   with_items:
-    - git
     - vim
   tags:
     - vim
@@ -24,6 +23,7 @@
     repo: https://github.com/VundleVim/Vundle.vim.git
     dest: "~/.vim/bundle/Vundle.vim"
     version: master
+    update: no
   tags:
     - vim
 
@@ -37,12 +37,18 @@
   tags:
     - vim
 
+- name: Check existance of spell-check file
+  stat:
+    path: "~/.vim/en.utf-8.add"
+  register: spell_check_file
+
 - name: Touch spell-check file
   become: false
   file:
     path: "~/.vim/en.utf-8.add"
     state: touch
     mode: 0644
+  when: spell_check_file.stat.exists != true
   tags:
     - vim
 
