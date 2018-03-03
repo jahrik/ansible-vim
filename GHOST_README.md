@@ -1,17 +1,28 @@
 # Creating and testing an ansible role with molecule.
 
-Vim is my favorite text editor and a tool that I use every day at work and at home.  If you are in the IT field, you can relate that a text editor is one of your most powerful tools.  Being comfortable and proficient in "{{ text_editor_of_your_choice }}" seams like a basic skill, but is a very valuable skill to have.  As a sysadmin, you will most likely only be using the default settings across all the systems you manage, but on your personal system and workstation you should go nuts and customize the hell out of it to give yourself as much ease of use as possible. I like a lot of customization to vim when I set it up on a new workstation and install vundle to handle plugins.  I end up with a customized .vimrc file and a bunch of other things.  If I had to do this setup manually, it would take a few hours at least.  Half of that time Googling how I did something before and the other half forgetting what was there to begin with.  With tools like ansible, you can easily recreate the customization you prefer across all of your systems, be that at work or your homelab and save yourself hours of frustration and repetition.
+Vim is my favorite text editor and a tool that I use every day at work and at home.  If you are in the IT field, you can relate that a text editor is one of your most powerful tools.  Being comfortable and proficient in "{{ text_editor_of_your_choice }}" seams like a basic skill that could get overlooked, but is a very valuable skill to have.  As a sysadmin, you will most likely only be using the default settings in vim or nano across all the systems you manage, but on your personal system and workstation you should go nuts and customize the hell out of it to give yourself as much ease of use as possible. I like a lot of customization to vim when I set it up on a new workstation.  I use vundle to handle plugins and end up with a customized .vimrc file to handle the rest.  If I had to do this setup manually, it would take a few hours at least.  Half of that time Googling how I did something before and the other half forgetting what was there to begin with.  With tools like ansible, you can easily recreate the customization you prefer across all of your systems, be that at work or your homelab and save yourself hours of frustration and repetition.
 
-Ansible is a very reliable tool for managing your local workstation.  A good place to start automating, is at the base of your every day setup.  Text editor, user, groups, base packages, and every day tools inevitably installed anytime you get a new system or accidentally lose or kill your old one.  If you are setting up Ansible for the first time, you'll want to start with their [install docs](http://docs.ansible.com/ansible/latest/intro_installation.html).  Once you've got it installed and are ready to go, you can follow along locally or on a VM.  My initial plan was to do this with a couple of vagrant boxes in my traditional way of testing new things by creating a Vagrantfile and going from there, but after getting started in writing this and also considering test kitchen I've decided to check out [molecule](https://molecule.readthedocs.io/en/latest/index.html).
+Ansible is a very reliable tool for managing your local workstation.  A good place to start automating, is at the base of your every day setup.  Text editor, user, groups, base packages, and every day tools inevitably installed anytime you get a new system or accidentally lose or kill your old one.  If you are setting up Ansible for the first time, you'll want to start with their [install docs](http://docs.ansible.com/ansible/latest/intro_installation.html).  Once you've got it installed and are ready to go.  My initial plan was to do this with a couple of vagrant boxes in my traditional way of testing new things by creating a Vagrantfile and going from there, but after getting started writing this and considering test kitchen, I've decided to check out [molecule](https://molecule.readthedocs.io/en/latest/index.html) instead.  It looks like the write tool for the job.
 
-This write-up is intended to:
-* walk through the creation of a new ansible role
-  * tasks
+With this write-up, I intend to learn a bit more about:
+* ansible roles
+  * creation
+    * `ansible-galaxy init`
+    * `molecule init`
+  * directory structure
   * variables
   * templates
   * handlers
-* write and test it with molecule
-* upload it to ansible galaxy for use in a later playbook
+* molecule
+  * linting
+  * testing
+  * docker
+* galaxy
+  * dependent roles
+  * upload role
+  * install role
+
+Check out the [source code](https://github.com/jahrik/ansible-vim) before you get started, if you want to follow along.
 
 ## Requirements
 
@@ -23,12 +34,14 @@ This write-up is intended to:
 
 ## Molecule
 
-If you decide to set up a virtualenv and install molecule that way, you can do the following.  If you need an intro on python virtualenv you can find it [here](https://homelab.business/python-virualenv-the-why-and-how/).
+If you decide to set up a virtualenv and install molecule that way, you can do the following.
 
 Create a virtual environment for molecule and install it.
 
     mkvirtualenv -p /usr/bin/python2.7 ansible
     pip install docker-py molecule
+
+If you need an intro on python virtualenv you can find it [here](https://homelab.business/python-virualenv-the-why-and-how/).
 
 ## Role
 
@@ -48,24 +61,19 @@ At the most basic level, if all you needed was a playbook to install vim on arch
 
 ### Molecule
 
-To initialize a new role with molecule, you would run the following.
-
-    # -r role
-    # -d driver
+To initialize a new role with molecule, you would run the following.  Where `-r` is the role and `-d` is the driver.
 
     molecule init role -r vim -d docker                                                                            
 
     --> Initializing new role vim...
-    Initialized role in /home/wgill/vim successfully.
+    Initialized role in /home/jahrik/vim successfully.
 
-But I had already created this role with `ansible-galaxy init` and had to initialize molecule this way
-
-    # From role root dir
+But I had already created this role with `ansible-galaxy init` and had to initialize molecule this way from the role root directory.
 
     molecule init scenario -r vim -d docker
 
     --> Initializing new scenario default...
-    Initialized scenario in /home/wgill/vim/molecule/default successfully.
+    Initialized scenario in /home/jahrik/vim/molecule/default successfully.
 
 With molecule initialized you should see a directory structure close to this.
 
@@ -151,9 +159,240 @@ With that, it's ready to go!  Test it by running `molecule test`. There is a lot
         ├── verify
         └── destroy
 
+These are all commands molecule can perform when called individually.  It's turning out to be a very beautiful tool!  For example, if you just want to lint you can run the following.
+
+    molecule lint
+    --> Test matrix
+
+    └── default
+        └── lint
+
+    --> Scenario: 'default'
+    --> Action: 'lint'
+    --> Executing Yamllint on files found in /home/jahrik/ansible/ansible-vim/...
+    Lint completed successfully.
+    --> Executing Flake8 on files found in /home/jahrik/ansible/ansible-vim/molecule/default/tests/...
+    Lint completed successfully.
+    --> Executing Ansible Lint on /home/jahrik/ansible/ansible-vim/molecule/default/playbook.yml...
+    Lint completed successfully.
+
+And if I do a `molecule converge` it will run through all the steps up to converge.  Pretty neat :-)
+
+    molecule converge
+    --> Test matrix
+
+    └── default
+        ├── dependency
+        ├── create
+        ├── prepare
+        └── converge
+
 ### Vundle
 
-Vim should be successfully passing tests and installing in both environments by now.
+Vim should be successfully passing tests and installing in both environments by now.  Install Vundle from github to handle vim plugins.
+
+**./tasks/main.yml**
+
+    - name: create ~/.vim diretory
+      become: false
+      file:
+        path: "~/.vim/"
+        state: directory
+        mode: 0755
+      tags:
+        - vim
+
+    - name: Clone vundle from github
+      become: false
+      git:
+        repo: https://github.com/VundleVim/Vundle.vim.git
+        dest: "~/.vim/bundle/Vundle.vim"
+        version: master
+      tags:
+        - vim
+
+The list of plugins to be installed with Vundle are going to very from person to person and grow and change, so these should be handled as variables.  Add variables to `./defaults/main.yml`.  These variables will then be added to the .vimrc when it is created.  The `vundle` variable is the list of vundle plugins that will be installed.  Any and all of these variables can be over-written in a multitude of ways down the line, but if you don't, this is what they will default to.  If you're familiar with vim already, some of these variables should make sense.  It makes more sens when the file is created.
+
+**./defaults/main.yml**
+
+```
+---
+vundle:
+  - "Gundo"
+  - "git.zip"
+  - "fugitive.vim"
+  - "The-NERD-tree"
+  - "EasyMotion"
+  - "ack.vim"
+  - "minibufexpl.vim"
+  - "vim-flake8"
+  - "surround.vim"
+  - "tomtom/tlib_vim"
+  - "garbas/vim-snipmate"
+  - "vadv/vim-chef"
+  - "godlygeek/tabular"
+  - "vim-syntastic/syntastic"
+  - "plasticboy/vim-markdown"
+  - "ekalinin/Dockerfile.vim"
+  - "MarcWeber/vim-addon-mw-utils"
+  - "https://github.com/hashivim/vim-terraform.git"
+  - "https://github.com/wtfbbqhax/Snort-vim.git"
+  - "https://github.com/pearofducks/ansible-vim.git"
+  - "https://github.com/davidhalter/jedi-vim.git"
+  - "https://github.com/powerline/powerline.git"
+  - "https://github.com/ngmy/vim-rubocop.git"
+set:
+  - laststatus=2
+  - showtabline=2
+  - noshowmode
+  - foldmethod=indent
+  - foldlevel=99
+  - background=dark
+  - completeopt=menuone,longest,preview
+  - colorcolumn=101
+  - cursorcolumn
+  - cursorline
+  - expandtab
+  - tabstop=2
+  - shiftwidth=2
+  - spell
+  - spelllang=en
+  - spellfile=$HOME/.vim/en.utf-8.add
+  - number
+  # syntastic
+  - statusline+=%#warningmsg#
+  - statusline+=%{SyntasticStatuslineFlag()}
+  - statusline+=%*
+map:
+  - <c-j> <c-w>j
+  - <c-k> <c-w>k
+  - <c-l> <c-w>l
+  - <c-h> <c-w>h
+  - <leader>td <Plug>TaskLisk
+  - "<leader>g :GundoToggle<CR>"
+  - "<F2> :NERDTreeToggle<CR>"
+  - "<F3> :setlocal spell! spelllang=en_us<CR>"
+nmap:
+  - "<F4> :SyntasticToggleMode<CR>"
+  - "<f5> :set number! number?<cr>"
+syntax:
+  - "on"
+colorscheme:
+  - slate
+filetype:
+  - "on"
+  - plugin indent on
+let:
+  - g:pyflakes_use_quickfix = 0
+  - g:NERDTreeDirArrows=0
+  - g:syntastic_always_populate_loc_list = 1
+  - g:syntastic_auto_loc_list = 1
+  - g:syntastic_check_on_open = 1
+  - g:syntastic_check_on_wq = 0
+  - g:syntastic_ruby_checkers = ['rubocop']
+  - g:syntastic_python_checkers = ['pylint', 'flake8']
+  - g:syntastic_ansible_checkers = ['ansible_lint']
+  - g:syntastic_chef_checkers = ['foodcritic', 'cookstyle']
+  - g:syntastic_ignore_files = ['\m^roles/']
+command:
+  - Fuckyou w !sudo tee %
+autocmd:
+  - FileType ruby,eruby set filetype=ruby.eruby.chef
+```
+
+## .vimrc
+
+The .vimrc file will be generated from a jinja2 template at run-time.  It will pull in the variables from defaults/main.yml unless there are variables overwriting them.  Read up on [Ansible variable precedence](http://docs.ansible.com/ansible/latest/playbooks_variables.html#variable-precedence-where-should-i-put-a-variable), if you need more info.
+
+Create a template file for the .vimrc.
+
+What it's doing:
+* Configure vundle
+* lines with `" ` are just comments
+* The `{% for item in thing %}` blocks
+  * using all the variables from defaults/main.yml
+  * create a line per list "{{ item }}"
+
+**./templates/vimrc.j2**
+
+```
+set nocompatible              " be iMproved, required
+filetype off                  " required
+
+" set the runtime path to include Vundle and initialize
+set rtp+=~/.vim/bundle/Vundle.vim/
+call vundle#begin()
+
+" let Vundle manage Vundle, required
+Plugin 'gmarik/Vundle.vim'
+
+{% for item in vundle %}
+Bundle "{{ item }}"
+{% endfor %}
+
+" All of your Plugins must be added before the following line
+call vundle#end()            " required
+filetype plugin indent on    " required
+
+" Brief help
+" :PluginList       - lists configured plugins
+" :PluginInstall    - installs plugins; append `!` to update or just
+" :PluginUpdate
+" :PluginSearch     - foo - searches for foo; append `!` to refresh local cache
+" :PluginClean      - confirms removal of unused plugins; append `!` to
+" auto-approve removal
+"
+" see :h vundle for more details or wiki for FAQ
+" Put your non-Plugin stuff after this line
+
+{% for item in set %}
+set {{ item }}
+{% endfor %}
+
+{% for item in map %}
+map {{ item }}
+{% endfor %}
+
+{% for item in nmap %}
+nmap {{ item }}
+{% endfor %}
+
+{% for item in syntax %}
+syntax {{ item }}
+{% endfor %}
+
+{% for item in colorscheme %}
+colorscheme {{ item }}
+{% endfor %}
+
+{% for item in filetype %}
+filetype {{ item }}
+{% endfor %}
+
+{% for item in let %}
+let {{ item }}
+{% endfor %}
+
+{% for item in command %}
+command {{ item }}
+{% endfor %}
+
+{% for item in autocmd %}
+autocmd {{ item }}
+{% endfor %}
+```
+
+Append the `./tasks/main.yml` file with a template block to generate the .vimrc file.  Notice that the `src:` is set to `src: vimrc.j2` which pulls in our template above.  This block also has something else new, `notify: install plugins`, which notifies a handler called `install plugins`.
+
+    - name: Generate ~/.vimrc
+      become: false
+      template:
+        src: vimrc.j2
+        dest: "~/.vimrc"
+        mode: "0644"
+      notify: install plugins
+      tags:
+        - vim
 
 ## Galaxy
 
@@ -163,8 +402,3 @@ Vim should be successfully passing tests and installing in both environments by 
 
     ansible-galaxy login --github-token REDACTED_TOKEN
     Successfully logged into Galaxy as jahrik
-
-
-
-
-
