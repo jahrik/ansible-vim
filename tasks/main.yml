@@ -41,6 +41,8 @@
   stat:
     path: "~/.vim/en.utf-8.add"
   register: spell_check_file
+  tags:
+    - vim
 
 - name: Touch spell-check file
   become: false
