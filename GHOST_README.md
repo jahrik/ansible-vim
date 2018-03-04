@@ -1,6 +1,6 @@
 # Creating and testing an ansible role with molecule.
 
-Vim is my favorite text editor and a tool that I use every day at work and at home.  If you are in the IT field, you can relate that a text editor is one of your most powerful tools.  Being comfortable and proficient in "{{ text_editor_of_your_choice }}" seams like a basic skill that could get overlooked, but is a very valuable skill to have.  As a sysadmin, you will most likely only be using the default settings in vim or nano across all the systems you manage, but on your personal system and workstation you should go nuts and customize the hell out of it.  I use vundle to handle plugins and end up with a customized .vimrc file to handle the rest.  If I had to do this setup manually, it would take a few hours at least.  Half of that time Googling how I did something before and the other half forgetting what was there to begin with.  With tools like ansible, you can easily recreate the customization you prefer across all of your systems, be that at work or your homelab and save yourself hours of frustration and repetition.
+Vim is my favorite text editor and a tool that I use every day at work and at home.  If you are in the IT field, you can relate that a text editor is one of your most powerful tools.  Being comfortable and proficient in "{{ text_editor_of_your_choice }}" seams like a basic skill, that could get overlooked, but is a very valuable skill to have.  As a sysadmin, you will most likely only be using the default settings in vim or nano across all the systems you manage, but on your personal system and workstation you should go nuts and customize the hell out of it.  I use vundle to handle plugins and end up with a customized .vimrc file to handle the rest.  If I had to do this setup manually, it would take a few hours at least.  Half of that time Googling how I did something before and the other half forgetting what was there to begin with.  With tools like ansible, you can easily recreate the customization you prefer across all of your systems, be that at work or your homelab and save yourself hours of frustration and repetition.
 
 Ansible is a very reliable tool for managing your local workstation.  A good place to start automating is at the base of your every day setup: text editor, user, groups, base packages, and every day tools inevitably installed anytime you get a new system or accidentally lose or kill your old one.  If you are setting up Ansible for the first time, you'll want to start with their [install docs](http://docs.ansible.com/ansible/latest/intro_installation.html).  Once you've got it installed and are ready to go.  My initial plan was to do this with a couple of vagrant boxes in my traditional way of testing new things by creating a Vagrantfile and going from there, but after getting started writing this and considering test kitchen, I've decided to check out [molecule](https://molecule.readthedocs.io/en/latest/index.html) instead.  It looks like the write tool for the job.
 
@@ -15,7 +15,11 @@ Table of Contents
   * [.vimrc](#vimrc)
 * [Galaxy](#galaxy)
 
-Check out the [source code](https://github.com/jahrik/ansible-vim) before you get started, if you want to follow along.
+Check out the [source code](https://github.com/jahrik/ansible-vim) before you get started, if you want to follow along.  This role has been uploaded to ansible galaxy as well, if you want to use it in a playbook you cane can install it with
+
+    ansible-galaxy install jahrik.vim
+
+    ln -s ~/.ansible/roles ./molecule/default/roles
 
 ## Requirements
 
@@ -27,14 +31,14 @@ Check out the [source code](https://github.com/jahrik/ansible-vim) before you ge
 
 ## Molecule
 
-If you decide to set up a virtualenv and install molecule that way, you can do the following.
+If you decide to set up a virtualenv to install molecule, you can do the following.
 
 Create a virtual environment for molecule and install it.
 
     mkvirtualenv -p /usr/bin/python2.7 ansible
     pip install docker-py molecule
 
-If you need an intro on python virtualenv you can find it [here](https://homelab.business/python-virualenv-the-why-and-how/).
+If you need an intro on python virtualenv you can find it [here](https://homelab.business/python-virualenv-the-why-and-how/)
 
 To initialize a new role with molecule, you would run the following.  Where `-r` is the role and `-d` is the driver.
 
@@ -122,7 +126,7 @@ At the most basic level, if all you needed was a playbook to install vim on arch
 
 ### Vim
 
-Copy your original playbook to `./tasks/main.yml` without the `- hosts: all` or `tasks:` lines.
+Use this playbook as a task by copying it to `./tasks/main.yml` without the `- hosts: all` or `tasks:` lines.
 
 **./tasks/main.yml**
 
@@ -154,6 +158,7 @@ With that, it's ready to go!  Test it by running `molecule test`. There is a lot
 These are all commands molecule can perform when called individually.  It's turning out to be a very beautiful tool!  For example, if you just want to lint you can run the following.
 
     molecule lint
+
     --> Test matrix
 
     └── default
@@ -171,6 +176,7 @@ These are all commands molecule can perform when called individually.  It's turn
 And if I do a `molecule converge` it will run through all the steps up to converge.  Pretty neat :-)
 
     molecule converge
+
     --> Test matrix
 
     └── default
