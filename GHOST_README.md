@@ -209,7 +209,7 @@ Vim should be successfully passing tests and installing in both environments by 
       tags:
         - vim
 
-The list of plugins to be installed with Vundle are going to very from person to person and grow and change, so these should be handled as variables.  Add variables to `./defaults/main.yml`.  These variables will then be added to the .vimrc when it is created.  The `vundle` variable is the list of vundle plugins that will be installed.  Any and all of these variables can be over-written in a multitude of ways down the line, but if you don't, this is what they will default to.  If you're familiar with vim already, some of these variables should make sense.  It makes more sens when the file is created.
+The list of plugins to be installed with Vundle are going to very from person to person and grow and change, so these should be handled as variables.  Add variables to `./defaults/main.yml`.  These variables will then be added to the .vimrc when it is created.  The `vundle` variable is the list of vundle plugins that will be installed.  Any and all of these variables can be over-written in a multitude of ways down the line, but if you don't, this is what they will default to.  If you're familiar with vim already, some of these variables should make sense.
 
 **./defaults/main.yml**
 
@@ -401,7 +401,7 @@ Handlers are tasks that get called if something happens.  Create a handler that 
 
 ## Galaxy
 
-Ansible galaxy is a public place to store roles for later use, much like github.  Uploading this role was as aeasy as creating an ansible.com account and linking it to github.  Because I have a meta/manin.yml file in my project it picked up on the vim role.  It took a couple of days to get it to sync, but seams to be working now.
+Ansible galaxy is a public place to store roles for later use, much like github.  Uploading this role was as aeasy as creating an ansible.com account and linking it to github.  Because I have a meta/main.yml file in my project it picked up on the vim role.  It took a couple of days for me to get it to sync, but seams to be working now.
 
 Now it is possible to download this role from galaxy.
 
