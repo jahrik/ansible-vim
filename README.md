@@ -3,11 +3,6 @@ Vim
 
 vim, vundle, plugins, vimrc
 
-Requirements
-------------
-
-[geerlingguy.git](https://galaxy.ansible.com/geerlingguy/git/)
-
 Role Variables
 --------------
 

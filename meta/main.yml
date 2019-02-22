@@ -1,7 +1,4 @@
 ---
-dependencies:
-  # - geerlingguy.git
-
 galaxy_info:
   author: jahrik
   description: Install vim, vundle, plugins, and customize .vimrc
