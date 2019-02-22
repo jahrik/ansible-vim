@@ -1,10 +1,10 @@
 ---
 - name: Install vim
   package:
-    name: "{{ item }}"
+    name:
+      - git
+      - vim
     state: present
-  with_items:
-    - vim
   tags:
     - vim
 

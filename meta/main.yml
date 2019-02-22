@@ -1,6 +1,6 @@
 ---
 dependencies:
-  - geerlingguy.git
+  # - geerlingguy.git
 
 galaxy_info:
   author: jahrik
