@@ -5,7 +5,7 @@
       - git
       - vim
     state: present
-    retry: 1
+    retries: 2
   tags:
     - vim
 
