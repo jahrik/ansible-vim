@@ -5,6 +5,7 @@
       - git
       - vim
     state: present
+    retry: 1
   tags:
     - vim
 
@@ -50,7 +51,7 @@
     path: "~/.vim/en.utf-8.add"
     state: touch
     mode: 0644
-  when: spell_check_file.stat.exists != true
+  when: not spell_check_file.stat.exists
   tags:
     - vim
 
