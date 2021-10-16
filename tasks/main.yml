@@ -4,6 +4,7 @@
     name:
       - git
       - vim
+      - vim-syntastic
     state: present
   tags:
     - vim
@@ -37,7 +38,7 @@
   tags:
     - vim
 
-- name: Check existance of spell-check file
+- name: Check existence of spell-check file
   stat:
     path: "~/.vim/en.utf-8.add"
   register: spell_check_file
