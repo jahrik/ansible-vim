@@ -6,7 +6,6 @@
       - vim
       - vim-syntastic
     state: present
-    retries: 3
   tags:
     - vim
 
