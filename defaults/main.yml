@@ -6,6 +6,7 @@ vundle:
   - "vadv/vim-chef"
   - "vim-syntastic/syntastic"
   - "plasticboy/vim-markdown"
+  - "mzlogin/vim-markdown-toc"
   - "ekalinin/Dockerfile.vim"
   - "https://github.com/hashivim/vim-terraform.git"
   - "https://github.com/wtfbbqhax/Snort-vim.git"
