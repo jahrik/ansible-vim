@@ -1,4 +1,11 @@
 ---
+- name: Update Repository cache when Ubuntu
+  apt:
+    update_cache: true
+    cache_valid_time: 3600
+    force_apt_get: true
+  when: ansible_facts['os_family'] == 'Debian' or ansible_facts['os_family'] == 'Ubuntu'
+
 - name: Install vim
   package:
     name:
@@ -24,7 +31,7 @@
     repo: https://github.com/VundleVim/Vundle.vim.git
     dest: "~/.vim/bundle/Vundle.vim"
     version: master
-    update: no
+    update: false
   tags:
     - vim
 
