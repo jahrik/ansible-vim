@@ -1,36 +1,15 @@
 ---
 dependency:
   name: galaxy
-  options:
-    role-file: requirements.yml
 driver:
   name: docker
-lint:
-  name: yamllint
 platforms:
-  - name: fedora
-    image: fedora:27
-  - name: ubuntu
-    image: ubuntu:16.04
+  - name: instance
+    # image: docker.io/pycontribs/centos:8
+    # image: ansible/ansible
+    image: geerlingguy/docker-ubuntu2004-ansible
+    pre_build_image: true
 provisioner:
   name: ansible
-  lint:
-    name: ansible-lint
-scenario:
-  name: default
-  test_sequence:
-    - lint
-    - destroy
-    - dependency
-    - syntax
-    - create
-    - prepare
-    - converge
-    - idempotence
-    - side_effect
-    - verify
-    - destroy
 verifier:
-  name: testinfra
-  lint:
-    name: flake8
+  name: ansible
