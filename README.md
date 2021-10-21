@@ -1,14 +1,15 @@
 Vim
 =========
 
-vim, vundle, plugins, vimrc
+Install vim, vundle, plugins, and configure vimrc
+
+Requirements
+------------
+
+- git
 
 Role Variables
 --------------
-
-Available variables are listed below, along with default values (see defaults/main.yml):
-
-Vundle plugins
 
     vundle:
       - "The-NERD-tree"
@@ -17,15 +18,13 @@ Vundle plugins
       - "vadv/vim-chef"
       - "vim-syntastic/syntastic"
       - "plasticboy/vim-markdown"
+      - "mzlogin/vim-markdown-toc"
       - "ekalinin/Dockerfile.vim"
       - "https://github.com/hashivim/vim-terraform.git"
       - "https://github.com/wtfbbqhax/Snort-vim.git"
       - "https://github.com/pearofducks/ansible-vim.git"
       - "https://github.com/powerline/powerline.git"
       - "https://github.com/ngmy/vim-rubocop.git"
-
-:set
-
     set:
       - laststatus=2
       - showtabline=2
@@ -48,10 +47,6 @@ Vundle plugins
       - statusline+=%#warningmsg#
       - statusline+=%{SyntasticStatuslineFlag()}
       - statusline+=%*
-
-
-:map
-
     map:
       - <c-j> <c-w>j
       - <c-k> <c-w>k
@@ -61,33 +56,16 @@ Vundle plugins
       - "<leader>g :GundoToggle<CR>"
       - "<F2> :NERDTreeToggle<CR>"
       - "<F3> :setlocal spell! spelllang=en_us<CR>"
-
-
-:nmap
-
     nmap:
       - "<F4> :SyntasticToggleMode<CR>"
       - "<f5> :set number! number?<cr>"
-
-:syntax
-
     syntax:
       - "on"
-
-:colorscheme
-
     colorscheme:
       - slate
-
-:filetype
-
     filetype:
       - "on"
       - plugin indent on
-
-
-:let
-
     let:
       - g:pyflakes_use_quickfix = 0
       - g:NERDTreeDirArrows=0
@@ -98,28 +76,21 @@ Vundle plugins
       - g:syntastic_ruby_checkers = ['rubocop']
       - g:syntastic_python_checkers = ['pylint', 'flake8']
       - g:syntastic_ansible_checkers = ['ansible_lint']
-      - g:syntastic_chef_checkers = ['foodcritic', 'cookstyle']
-      - g:syntastic_ignore_files = ['\m^roles/']
-
-:command
-
+      - g:syntastic_chef_checkers = ['cookstyle']
+      - g:ansible_ftdetect_filename_regex = '\v(playbook|site|main|local|requirements)\.ya?ml$'
+      # - g:syntastic_ignore_files = ['\m^roles/']
     command:
       - Fuckyou w !sudo tee %
-
-:autocmd
-
     autocmd:
       - FileType ruby,eruby set filetype=ruby.eruby.chef
 
 Dependencies
 ------------
 
-- geerlingguy.git
+none
 
 Example Playbook
 ----------------
-
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
 
     - hosts: local
       roles:

@@ -70,8 +70,9 @@ let:
   - g:syntastic_ruby_checkers = ['rubocop']
   - g:syntastic_python_checkers = ['pylint', 'flake8']
   - g:syntastic_ansible_checkers = ['ansible_lint']
-  - g:syntastic_chef_checkers = ['foodcritic', 'cookstyle']
-  - g:syntastic_ignore_files = ['\m^roles/']
+  - g:syntastic_chef_checkers = ['cookstyle']
+  - g:ansible_ftdetect_filename_regex = '\v(playbook|site|main|local|requirements)\.ya?ml$'
+  # - g:syntastic_ignore_files = ['\m^roles/']
 
 command:
   - Fuckyou w !sudo tee %
