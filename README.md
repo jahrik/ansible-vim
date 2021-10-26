@@ -1,15 +1,14 @@
-Vim
-=========
+## Vim
+
+[![CI](https://github.com/jahrik/ansible-vim/actions/workflows/ci.yml/badge.svg?branch=master&event=push)](https://github.com/jahrik/ansible-vim/actions/workflows/ci.yml)
 
 Install vim, vundle, plugins, and configure vimrc
 
-Requirements
-------------
+## Requirements
 
 - git
 
-Role Variables
---------------
+## Role Variables
 
     vundle:
       - "The-NERD-tree"
@@ -84,25 +83,21 @@ Role Variables
     autocmd:
       - FileType ruby,eruby set filetype=ruby.eruby.chef
 
-Dependencies
-------------
+## Dependencies
 
 none
 
-Example Playbook
-----------------
+## Example Playbook
 
     - hosts: local
       roles:
          - { role: jahrik.vim, colorscheme: desert }
 
-License
--------
+## License
 
 GPLv2
 
-Author Information
-------------------
+## Author Information
 
 jahrik@gmail.com
 
