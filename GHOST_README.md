@@ -1,11 +1,5 @@
-# Creating and testing an ansible role with molecule.
-
-Vim is my favorite text editor and a tool that I use every day at work and at home.  If you are in the IT field, you can relate that a text editor is one of your most powerful tools.  Being comfortable and proficient in "{{ text_editor_of_your_choice }}" seams like a basic skill, that could get overlooked, but is a very valuable skill to have.  As a sysadmin, you will most likely only be using the default settings in vim or nano across all the systems you manage, but on your personal system and workstation you should go nuts and customize the hell out of it.  I use vundle to handle plugins and end up with a customized .vimrc file to handle the rest.  If I had to do this setup manually, it would take a few hours at least.  Half of that time Googling how I did something before and the other half forgetting what was there to begin with.  With tools like ansible, you can easily recreate the customization you prefer across all of your systems, be that at work or your homelab and save yourself hours of frustration and repetition.
-
-Ansible is a very reliable tool for managing your local workstation.  A good place to start automating is at the base of your every day setup: text editor, user, groups, base packages, and every day tools inevitably installed anytime you get a new system or accidentally lose or kill your old one.  If you are setting up Ansible for the first time, you'll want to start with their [install docs](http://docs.ansible.com/ansible/latest/intro_installation.html).  Once you've got it installed and are ready to go.  My initial plan was to do this with a couple of vagrant boxes in my traditional way of testing new things by creating a Vagrantfile and going from there, but after getting started writing this and considering test kitchen, I've decided to check out [molecule](https://molecule.readthedocs.io/en/latest/index.html) instead.  It looks like the write tool for the job.
-
-Table of Contents
-=================
+# Creating and testing an ansible role for vim.
+<!-- vim-markdown-toc GFM -->
 
 * [Requirements](#requirements)
 * [Molecule](#molecule)
@@ -15,15 +9,13 @@ Table of Contents
   * [.vimrc](#vimrc)
 * [Galaxy](#galaxy)
 
-Check out the [source code](https://github.com/jahrik/ansible-vim) before you get started, if you want to follow along.  This role has been uploaded to ansible galaxy as well, if you want to use it in a playbook you cane can install it with
+<!-- vim-markdown-toc -->
 
-    ansible-galaxy install jahrik.vim
-
-    ln -s ~/.ansible/roles ./molecule/default/roles
+Vim is my favorite text editor and a tool that I use every day at work and for most of my homelab projects. As a Linux system admin, it's likely to only ever use the default settings in vim or nano across all the systems you manage, but on personal systems and workstation setups you should go nuts and customize the hell out of it to take advantage of all the cool plugins out there. Vundle makes it easy to handle plugins to Vim and add all kinds of functionality to rival full fledged IDEs. Every time I set up a new system or mess around with new plugins, I end up with a complicated mess in my .vimrc file and keeping systems in sync can get complicated. With a config management tool like Ansible, it's easy to recreate the settings preferred across all systems and save yourself hours of frustration and repetition.
 
 ## Requirements
 
-* Python2.7
+* Python3
 * [Ansible](http://docs.ansible.com/ansible/latest/intro_installation.html)
 * [Molecule](https://molecule.readthedocs.io/en/latest/installation.html)
 * [Docker](https://docs.docker.com/install/)
