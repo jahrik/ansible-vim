@@ -11,7 +11,7 @@
 
 <!-- vim-markdown-toc -->
 
-Vim is my favorite text editor and a tool that I use every day at work and for most of my homelab projects. As a Linux system admin, it's likely to only ever use the default settings in vim or nano across all the systems you manage, but on personal systems and workstation setups you should go nuts and customize the hell out of it to take advantage of all the cool plugins out there. Vundle makes it easy to handle plugins to Vim and add all kinds of functionality to rival full fledged IDEs. Every time I set up a new system or mess around with new plugins, I end up with a complicated mess in my .vimrc file and keeping systems in sync can get complicated. With a config management tool like Ansible, it's easy to recreate the settings preferred across all systems and save yourself hours of frustration and repetition.
+Vim is my favorite text editor and a tool that I use every day at work and for most of my homelab projects. As a Linux system admin, it's likely to only use the default settings in vim or nano across all the systems you manage, but on personal systems and workstation setups you should go nuts and customize the hell out of it to take advantage of all the cool plugins out there. Vundle makes it easy to handle managing plugins in Vim and add all kinds of functionality to rival full fledged IDEs. Every time I set up a new system or mess around with new plugins, I end up with a complicated mess in my .vimrc file and keeping systems in sync can get complicated. With a config management tool like Ansible, it's easy to recreate the settings preferred across all my systems and save myself hours of frustration and repetition.
 
 ## Requirements
 
@@ -19,18 +19,13 @@ Vim is my favorite text editor and a tool that I use every day at work and for m
 * [Ansible](http://docs.ansible.com/ansible/latest/intro_installation.html)
 * [Molecule](https://molecule.readthedocs.io/en/latest/installation.html)
 * [Docker](https://docs.docker.com/install/)
-* Tested on arch, ubuntu-16.04, and fedora-27
 
 ## Molecule
 
-If you decide to set up a virtualenv to install molecule, you can do the following.
+If you don't already have molecule installed alongside ansible, the easiest way to do so is with pip.
 
-Create a virtual environment for molecule and install it.
+    pip install molecule
 
-    mkvirtualenv -p /usr/bin/python2.7 ansible
-    pip install docker-py molecule
-
-If you need an intro on python virtualenv you can find it [here](https://homelab.business/python-virualenv-the-why-and-how/)
 
 To initialize a new role with molecule, you would run the following.  Where `-r` is the role and `-d` is the driver.
 
