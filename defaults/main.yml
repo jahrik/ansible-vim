@@ -29,7 +29,7 @@ set:
   - shiftwidth=2
   - spell
   - spelllang=en
-  - spellfile=$HOME/.vim/en.utf-8.add
+  - spellfile=$HOME/.config/vim/en.utf-8.add
   - number
   # syntastic
   - statusline+=%#warningmsg#

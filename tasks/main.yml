@@ -16,10 +16,10 @@
   tags:
     - vim
 
-- name: create ~/.vim diretory
+- name: create ~/.config/vim diretory
   become: false
   file:
-    path: "~/.vim/"
+    path: "~/.config/vim/"
     state: directory
     mode: 0755
   tags:
@@ -29,7 +29,7 @@
   become: false
   git:
     repo: https://github.com/VundleVim/Vundle.vim.git
-    dest: "~/.vim/bundle/Vundle.vim"
+    dest: "~/.config/vim/bundle/Vundle.vim"
     version: master
     update: false
   tags:
@@ -47,7 +47,7 @@
 
 - name: Check existence of spell-check file
   stat:
-    path: "~/.vim/en.utf-8.add"
+    path: "~/.config/vim/en.utf-8.add"
   register: spell_check_file
   tags:
     - vim
@@ -55,7 +55,7 @@
 - name: Touch spell-check file
   become: false
   file:
-    path: "~/.vim/en.utf-8.add"
+    path: "~/.config/vim/en.utf-8.add"
     state: touch
     mode: 0644
   when: not spell_check_file.stat.exists
