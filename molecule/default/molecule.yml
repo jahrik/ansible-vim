@@ -4,9 +4,7 @@ dependency:
 driver:
   name: docker
 platforms:
-  - name: instance
-    # image: docker.io/pycontribs/centos:8
-    # image: ansible/ansible
+  - name: ubuntu
     image: geerlingguy/docker-ubuntu2004-ansible
     pre_build_image: true
 provisioner:
