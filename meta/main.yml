@@ -1,5 +1,5 @@
 galaxy_info:
-  # role_name: vim
+  role_name: vim
   author: jahrik
   namespace: jahrik
   description: Install vim, vundle, plugins, and customize .vimrc

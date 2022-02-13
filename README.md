@@ -1,6 +1,6 @@
 ## Vim
 
-[![CI](https://github.com/jahrik/ansible-vim/actions/workflows/ci.yml/badge.svg?branch=master&event=push)](https://github.com/jahrik/ansible-vim/actions/workflows/ci.yml)
+[![CICD](https://github.com/jahrik/ansible-vim/actions/workflows/cicd.yml/badge.svg)](https://github.com/jahrik/ansible-vim/actions/workflows/cicd.yml)
 
 Install vim, vundle, plugins, and configure vimrc
 
