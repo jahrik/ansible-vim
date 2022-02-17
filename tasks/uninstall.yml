@@ -1,0 +1,35 @@
+---
+- name: Uninstall vim
+  package:
+    name:
+      - vim-syntastic
+      - vim
+    state: absent
+  tags:
+    - vim
+
+- name: rsync ~/.config/vim to /tmp/.config/vim
+  synchronize:
+    src: ~/.config/vim/
+    dest: /tmp/vim
+
+- name: Remove ~/.config/vim directory
+  become: false
+  file:
+    path: "~/.config/vim/"
+    state: absent
+  tags:
+    - vim
+
+- name: rsync ~/.vimrc to /tmp/.config/vim/.vimrc
+  synchronize:
+    src: ~/.vimrc
+    dest: /tmp/vim/.vimrc
+
+- name: Remove ~/.vimrc
+  become: false
+  file:
+    path: "~/.vimrc"
+    state: absent
+  tags:
+    - vim

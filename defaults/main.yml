@@ -1,4 +1,5 @@
 ---
+install: true
 vundle:
   - "The-NERD-tree"
   - "vim-flake8"
