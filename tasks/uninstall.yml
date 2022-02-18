@@ -1,5 +1,6 @@
 ---
 - name: Uninstall vim
+  become: true
   package:
     name:
       - vim-syntastic
@@ -9,6 +10,7 @@
     - vim
 
 - name: rsync ~/.config/vim to /tmp/.config/vim
+  become: false
   synchronize:
     src: ~/.config/vim/
     dest: /tmp/vim
@@ -22,6 +24,7 @@
     - vim
 
 - name: rsync ~/.vimrc to /tmp/.config/vim/.vimrc
+  become: false
   synchronize:
     src: ~/.vimrc
     dest: /tmp/vim/.vimrc

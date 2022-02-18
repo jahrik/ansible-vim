@@ -1,5 +1,6 @@
 ---
 - name: Update Repository cache when Ubuntu
+  become: true
   apt:
     update_cache: true
     cache_valid_time: 3600
@@ -7,6 +8,7 @@
   when: ansible_facts['os_family'] == 'Debian' or ansible_facts['os_family'] == 'Ubuntu'
 
 - name: Install vim
+  become: true
   package:
     name:
       - git
@@ -63,6 +65,7 @@
     - vim
 
 - name: vim info
+  become: false
   debug:
     msg: "See ':h vundle' for more details."
   tags:
