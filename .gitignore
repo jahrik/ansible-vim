@@ -9,3 +9,4 @@
 *.molecule/
 .vagrant/
 molecule/default/roles
+.ansible/
