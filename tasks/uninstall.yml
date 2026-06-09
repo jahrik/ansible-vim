@@ -1,7 +1,7 @@
 ---
 - name: Uninstall vim
   become: true
-  package:
+  ansible.builtin.package:
     name:
       - vim-syntastic
       - vim
@@ -9,29 +9,29 @@
   tags:
     - vim
 
-- name: rsync ~/.config/vim to /tmp/.config/vim
+- name: Backup ~/.config/vim to /tmp/vim
   become: false
-  synchronize:
+  ansible.posix.synchronize:
     src: ~/.config/vim/
     dest: /tmp/vim
 
 - name: Remove ~/.config/vim directory
   become: false
-  file:
+  ansible.builtin.file:
     path: "~/.config/vim/"
     state: absent
   tags:
     - vim
 
-- name: rsync ~/.vimrc to /tmp/.config/vim/.vimrc
+- name: Backup ~/.vimrc to /tmp/vim/.vimrc
   become: false
-  synchronize:
+  ansible.posix.synchronize:
     src: ~/.vimrc
     dest: /tmp/vim/.vimrc
 
 - name: Remove ~/.vimrc
   become: false
-  file:
+  ansible.builtin.file:
     path: "~/.vimrc"
     state: absent
   tags:
