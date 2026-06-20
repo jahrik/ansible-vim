@@ -13,6 +13,16 @@
         that: vim_bin.stat.exists
         fail_msg: "vim binary not found at /usr/bin/vim"
 
+    - name: Run vim --version
+      ansible.builtin.command: vim --version
+      register: vim_version
+      changed_when: false
+
+    - name: Assert vim version output
+      ansible.builtin.assert:
+        that: "'VIM - Vi IMproved' in vim_version.stdout"
+        fail_msg: "vim --version did not produce expected output"
+
     - name: Check ~/.vimrc
       ansible.builtin.stat:
         path: ~/.vimrc
@@ -22,6 +32,12 @@
       ansible.builtin.assert:
         that: vimrc.stat.exists
         fail_msg: "~/.vimrc not found"
+
+    - name: Verify vim can source ~/.vimrc without errors
+      ansible.builtin.command: vim -u ~/.vimrc --noplugin -c 'qall!'
+      register: vim_source
+      changed_when: false
+      failed_when: vim_source.rc != 0
 
     - name: Check vundle directory
       ansible.builtin.stat:
