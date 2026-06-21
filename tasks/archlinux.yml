@@ -1,0 +1,10 @@
+---
+- name: Install vim (Arch Linux)
+  become: true
+  community.general.pacman:
+    name:
+      - git
+      - vim
+      - vim-syntastic
+    state: present
+    update_cache: true

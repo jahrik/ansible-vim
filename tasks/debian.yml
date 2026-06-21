@@ -1,0 +1,15 @@
+---
+- name: Update apt cache (Debian)
+  become: true
+  ansible.builtin.apt:
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: Install vim (Debian)
+  become: true
+  ansible.builtin.apt:
+    name:
+      - git
+      - vim
+      - vim-syntastic
+    state: present
