@@ -24,16 +24,18 @@ Installs [Vim](https://www.vim.org/) with [Vundle](https://github.com/VundleVim/
 - `tasks/install.yml` — updates apt cache (Debian), installs vim + git, clones Vundle, templates `~/.vimrc`, creates spell-check file
 - `tasks/uninstall.yml` — removes packages, backs up `~/.config/vim` and `~/.vimrc` to `/tmp/vim`, removes originals
 
-## Testing Commands
+## Testing
 
 ```bash
-# Lint
 yamllint .
-
-# Full molecule test (Arch container)
+ansible-lint
 molecule test
-
-# Iterative
 molecule converge
 molecule destroy
 ```
+
+## CI
+
+- **Lint**: yamllint + ansible-lint
+- **Molecule**: Ubuntu 24.04 + Arch Linux via Docker
+- **Release**: publishes to Ansible Galaxy on merge to `main`
