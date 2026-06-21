@@ -27,6 +27,8 @@ Installs [Vim](https://www.vim.org/) with [Vundle](https://github.com/VundleVim/
 ## Testing
 
 ```bash
+uv sync
+source .venv/bin/activate
 yamllint .
 ansible-lint
 molecule test
