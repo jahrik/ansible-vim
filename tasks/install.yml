@@ -1,22 +1,11 @@
 ---
-- name: Update repository cache when Ubuntu
-  become: true
-  ansible.builtin.apt:
-    update_cache: true
-    cache_valid_time: 3600
-    force_apt_get: true
-  when: ansible_facts['os_family'] == 'Debian' or ansible_facts['os_family'] == 'Ubuntu'
+- name: Install vim (Arch Linux)
+  ansible.builtin.include_tasks: archlinux.yml
+  when: ansible_os_family == 'Archlinux'
 
-- name: Install vim
-  become: true
-  ansible.builtin.package:
-    name:
-      - git
-      - vim
-      - vim-syntastic
-    state: present
-  tags:
-    - vim
+- name: Install vim (Debian)
+  ansible.builtin.include_tasks: debian.yml
+  when: ansible_os_family == 'Debian'
 
 - name: Create ~/.config/vim directory
   become: false
