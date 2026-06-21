@@ -19,12 +19,14 @@ jobs:
         uses: actions/setup-python@v6
         with:
           python-version: '3.x'
+      - name: Install uv
+        run: pip3 install uv
       - name: Install test dependencies
-        run: pip3 install yamllint ansible-lint
+        run: uv sync
       - name: Lint code
-        run: yamllint .
+        run: uv run yamllint .
       - name: Ansible lint
-        run: ansible-lint
+        run: uv run ansible-lint
 
   molecule:
     name: Molecule
