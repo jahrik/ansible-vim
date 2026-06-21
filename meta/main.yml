@@ -6,13 +6,15 @@ galaxy_info:
   company: https://homelab.business
   issue_tracker_url: https://github.com/jahrik/ansible-vim/issues
   license: GPLv2
-  min_ansible_version: '2.1'
+  min_ansible_version: '2.16'
   platforms:
     - name: ArchLinux
       versions:
         - all
     - name: Ubuntu
       versions:
+        - noble
+        - jammy
         - focal
   galaxy_tags:
     - vim

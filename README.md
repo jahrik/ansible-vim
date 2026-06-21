@@ -1,97 +1,80 @@
-## Vim
+# VIM
 
 [![CICD](https://github.com/jahrik/ansible-vim/actions/workflows/cicd.yml/badge.svg)](https://github.com/jahrik/ansible-vim/actions/workflows/cicd.yml)
+[![Ansible Galaxy](https://img.shields.io/badge/ansible--galaxy-jahrik.vim-blue?logo=ansible)](https://galaxy.ansible.com/ui/standalone/roles/jahrik/vim/)
 
-Install vim, vundle, plugins, and configure vimrc
+Installs [Vim](https://www.vim.org/) with the [Vundle](https://github.com/VundleVim/Vundle.vim) plugin manager and deploys a fully configured `~/.vimrc` from a Jinja2 template. Plugins, key mappings, set options, and colorscheme are all controlled via role variables.
 
-## Requirements
+## OS Support
 
-- git
+| Platform | Install method |
+|---|---|
+| Arch Linux | `pacman` |
+| Ubuntu / Debian | `apt` |
 
 ## Role Variables
 
-    vundle:
-      - "The-NERD-tree"
-      - "vim-flake8"
-      - "surround.vim"
-      - "vadv/vim-chef"
-      - "vim-syntastic/syntastic"
-      - "plasticboy/vim-markdown"
-      - "mzlogin/vim-markdown-toc"
-      - "ekalinin/Dockerfile.vim"
-      - "https://github.com/hashivim/vim-terraform.git"
-      - "https://github.com/wtfbbqhax/Snort-vim.git"
-      - "https://github.com/pearofducks/ansible-vim.git"
-      - "https://github.com/powerline/powerline.git"
-      - "https://github.com/ngmy/vim-rubocop.git"
-    set:
-      - laststatus=2
-      - showtabline=2
-      - noshowmode
-      - foldmethod=indent
-      - foldlevel=99
-      - background=dark
-      - completeopt=menuone,longest,preview
-      - colorcolumn=101
-      - cursorcolumn
-      - cursorline
-      - expandtab
-      - tabstop=2
-      - shiftwidth=2
-      - spell
-      - spelllang=en
-      - spellfile=$HOME/.vim/en.utf-8.add
-      - number
-      # syntastic
-      - statusline+=%#warningmsg#
-      - statusline+=%{SyntasticStatuslineFlag()}
-      - statusline+=%*
-    map:
-      - <c-j> <c-w>j
-      - <c-k> <c-w>k
-      - <c-l> <c-w>l
-      - <c-h> <c-w>h
-      - <leader>td <Plug>TaskLisk
-      - "<leader>g :GundoToggle<CR>"
-      - "<F2> :NERDTreeToggle<CR>"
-      - "<F3> :setlocal spell! spelllang=en_us<CR>"
-    nmap:
-      - "<F4> :SyntasticToggleMode<CR>"
-      - "<f5> :set number! number?<cr>"
-    syntax:
-      - "on"
-    colorscheme:
-      - slate
-    filetype:
-      - "on"
-      - plugin indent on
-    let:
-      - g:pyflakes_use_quickfix = 0
-      - g:NERDTreeDirArrows=0
-      - g:syntastic_always_populate_loc_list = 1
-      - g:syntastic_auto_loc_list = 1
-      - g:syntastic_check_on_open = 1
-      - g:syntastic_check_on_wq = 0
-      - g:syntastic_ruby_checkers = ['rubocop']
-      - g:syntastic_python_checkers = ['pylint', 'flake8']
-      - g:syntastic_ansible_checkers = ['ansible_lint']
-      - g:syntastic_chef_checkers = ['cookstyle']
-      - g:ansible_ftdetect_filename_regex = '\v(playbook|site|main|local|requirements)\.ya?ml$'
-      # - g:syntastic_ignore_files = ['\m^roles/']
-    command:
-      - Fuckyou w !sudo tee %
-    autocmd:
-      - FileType ruby,eruby set filetype=ruby.eruby.chef
+| Variable | Default | Description |
+|---|---|---|
+| `install` | `true` | Set to `false` to uninstall Vim and back up config to `/tmp/vim` |
+| `vundle` | (list) | [Vundle](https://github.com/VundleVim/Vundle.vim) plugins to install (short names or full GitHub URLs) |
+| `colorscheme` | `slate` | Vim colorscheme |
+| `set` | (list) | Vim `:set` options (tabstop, shiftwidth, spell, etc.) |
+| `map` | (list) | Key mappings |
+| `nmap` | (list) | Normal-mode key mappings |
+| `let` | (list) | Vim `let` variable assignments (Syntastic, NERDTree, etc.) |
 
-## Dependencies
-
-none
+Default plugins include: NERDTree, vim-syntastic, surround.vim, vim-markdown, Dockerfile.vim, vim-terraform, ansible-vim, powerline, and more. See `defaults/main.yml` for the full list.
 
 ## Example Playbook
 
-    - hosts: local
-      roles:
-         - { role: jahrik.vim, colorscheme: desert }
+```yaml
+---
+- hosts: all
+  roles:
+    - role: jahrik.vim
+```
+
+Custom colorscheme:
+
+```yaml
+---
+- hosts: all
+  vars:
+    colorscheme:
+      - desert
+  roles:
+    - role: jahrik.vim
+```
+
+To uninstall:
+
+```yaml
+---
+- hosts: all
+  vars:
+    install: false
+  roles:
+    - role: jahrik.vim
+```
+
+## Testing
+
+```bash
+uv sync
+source .venv/bin/activate
+yamllint .
+ansible-lint
+molecule test
+```
+
+Step by step:
+
+```bash
+molecule converge
+molecule verify
+molecule destroy
+```
 
 ## License
 
@@ -100,5 +83,3 @@ GPLv2
 ## Author Information
 
 jahrik@gmail.com
-
-https://homelab.business/
