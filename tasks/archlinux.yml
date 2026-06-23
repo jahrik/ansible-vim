@@ -1,4 +1,10 @@
 ---
+- name: Update pacman cache (Arch Linux)
+  become: true
+  community.general.pacman:
+    update_cache: true
+  changed_when: false
+
 - name: Install vim (Arch Linux)
   become: true
   community.general.pacman:

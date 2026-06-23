@@ -2,7 +2,7 @@
 
 This file provides guidance to AI coding agents when working with code in this repository.
 
-## Role Overview
+## Role Purpose
 
 Installs [Vim](https://www.vim.org/) with [Vundle](https://github.com/VundleVim/Vundle.vim) plugin manager and deploys a fully configured `~/.vimrc` from a Jinja2 template. Plugins, key mappings, set options, and colorscheme are all controlled via `defaults/main.yml`.
 
@@ -32,12 +32,4 @@ source .venv/bin/activate
 yamllint .
 ansible-lint
 molecule test
-molecule converge
-molecule destroy
 ```
-
-## CI
-
-- **Lint**: yamllint + ansible-lint
-- **Molecule**: Ubuntu 24.04 + Arch Linux via Docker
-- **Release**: publishes to Ansible Galaxy on merge to `main`
