@@ -5,7 +5,7 @@ galaxy_info:
   description: Install vim, vundle, plugins, and customize .vimrc
   company: https://homelab.business
   issue_tracker_url: https://github.com/jahrik/ansible-vim/issues
-  license: GPLv2
+  license: MIT
   min_ansible_version: '2.16'
   platforms:
     - name: ArchLinux
