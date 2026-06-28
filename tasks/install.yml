@@ -1,11 +1,11 @@
 ---
 - name: Install vim (Arch Linux)
   ansible.builtin.include_tasks: archlinux.yml
-  when: ansible_os_family == 'Archlinux'
+  when: ansible_facts['os_family'] == 'Archlinux'
 
 - name: Install vim (Debian)
   ansible.builtin.include_tasks: debian.yml
-  when: ansible_os_family == 'Debian'
+  when: ansible_facts['os_family'] == 'Debian'
 
 - name: Create ~/.config/vim directory
   become: false
