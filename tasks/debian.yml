@@ -12,4 +12,3 @@
       - git
       - vim
       - vim-syntastic
-    state: present

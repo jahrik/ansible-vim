@@ -11,9 +11,10 @@
 
 - name: Backup ~/.config/vim to /tmp/vim
   become: false
-  ansible.posix.synchronize:
-    src: ~/.config/vim/
-    dest: /tmp/vim
+  ansible.builtin.command:
+    cmd: "cp -a {{ ansible_env['HOME'] }}/.config/vim /tmp/vim"
+    creates: /tmp/vim
+    removes: "{{ ansible_env['HOME'] }}/.config/vim"
 
 - name: Remove ~/.config/vim directory
   become: false
@@ -25,9 +26,10 @@
 
 - name: Backup ~/.vimrc to /tmp/vim/.vimrc
   become: false
-  ansible.posix.synchronize:
-    src: ~/.vimrc
-    dest: /tmp/vim/.vimrc
+  ansible.builtin.command:
+    cmd: "cp -a {{ ansible_env['HOME'] }}/.vimrc /tmp/vim/.vimrc"
+    creates: /tmp/vim/.vimrc
+    removes: "{{ ansible_env['HOME'] }}/.vimrc"
 
 - name: Remove ~/.vimrc
   become: false

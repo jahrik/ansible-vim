@@ -58,6 +58,21 @@ To uninstall:
     - role: jahrik.vim
 ```
 
+## Tags
+
+Run or skip parts of the role with tags:
+
+```bash
+ansible-playbook playbook.yml --tags vim:install
+ansible-playbook playbook.yml --skip-tags vim:uninstall
+```
+
+| Tag | Scope |
+|---|---|
+| `vim` | All role tasks |
+| `vim:install` | Install path only |
+| `vim:uninstall` | Uninstall path only |
+
 ## Testing
 
 ```bash
