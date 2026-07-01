@@ -1,13 +1,23 @@
 ---
 - name: Install vim
-  ansible.builtin.include_tasks: install.yml
+  ansible.builtin.include_tasks:
+    file: install.yml
+    apply:
+      tags:
+        - vim
+        - vim:install
   when: install | default(true) | bool
   tags:
     - vim
     - vim:install
 
 - name: Uninstall vim
-  ansible.builtin.include_tasks: uninstall.yml
+  ansible.builtin.include_tasks:
+    file: uninstall.yml
+    apply:
+      tags:
+        - vim
+        - vim:uninstall
   when: not (install | default(true) | bool)
   tags:
     - vim
