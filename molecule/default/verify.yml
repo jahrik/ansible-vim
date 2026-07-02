@@ -48,3 +48,43 @@
       ansible.builtin.assert:
         that: vundle_dir.stat.exists and vundle_dir.stat.isdir
         fail_msg: "~/.config/vim/bundle/Vundle.vim not found"
+
+- name: Verify uninstall
+  hosts: all
+  gather_facts: true
+  tasks:
+    - name: Run jahrik.vim with install false
+      ansible.builtin.include_role:
+        name: jahrik.vim
+      vars:
+        install: false
+
+    - name: Check vim binary removed
+      ansible.builtin.stat:
+        path: /usr/bin/vim
+      register: vim_bin_removed
+
+    - name: Assert vim binary is removed
+      ansible.builtin.assert:
+        that: not vim_bin_removed.stat.exists
+        fail_msg: "vim binary still present at /usr/bin/vim after uninstall"
+
+    - name: Check ~/.vimrc removed
+      ansible.builtin.stat:
+        path: ~/.vimrc
+      register: vimrc_removed
+
+    - name: Assert ~/.vimrc is removed
+      ansible.builtin.assert:
+        that: not vimrc_removed.stat.exists
+        fail_msg: "~/.vimrc still present after uninstall"
+
+    - name: Check ~/.config/vim directory removed
+      ansible.builtin.stat:
+        path: ~/.config/vim/
+      register: vim_config_dir_removed
+
+    - name: Assert ~/.config/vim directory is removed
+      ansible.builtin.assert:
+        that: not vim_config_dir_removed.stat.exists
+        fail_msg: "~/.config/vim/ still present after uninstall"
