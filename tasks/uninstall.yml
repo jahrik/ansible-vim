@@ -12,9 +12,9 @@
 - name: Backup ~/.config/vim to /tmp/vim
   become: false
   ansible.builtin.command:
-    cmd: "cp -a {{ ansible_env['HOME'] }}/.config/vim /tmp/vim"
+    cmd: "cp -a {{ ansible_facts['env']['HOME'] }}/.config/vim /tmp/vim"
     creates: /tmp/vim
-    removes: "{{ ansible_env['HOME'] }}/.config/vim"
+    removes: "{{ ansible_facts['env']['HOME'] }}/.config/vim"
 
 - name: Remove ~/.config/vim directory
   become: false
@@ -27,9 +27,9 @@
 - name: Backup ~/.vimrc to /tmp/vim/.vimrc
   become: false
   ansible.builtin.command:
-    cmd: "cp -a {{ ansible_env['HOME'] }}/.vimrc /tmp/vim/.vimrc"
+    cmd: "cp -a {{ ansible_facts['env']['HOME'] }}/.vimrc /tmp/vim/.vimrc"
     creates: /tmp/vim/.vimrc
-    removes: "{{ ansible_env['HOME'] }}/.vimrc"
+    removes: "{{ ansible_facts['env']['HOME'] }}/.vimrc"
 
 - name: Remove ~/.vimrc
   become: false
