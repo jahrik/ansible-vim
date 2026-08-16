@@ -21,7 +21,7 @@
   ansible.builtin.git:
     repo: https://github.com/VundleVim/Vundle.vim.git
     dest: "~/.config/vim/bundle/Vundle.vim"
-    version: master
+    version: v0.10.2
     update: false
   tags:
     - vim
